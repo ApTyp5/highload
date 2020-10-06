@@ -1,4 +1,0 @@
-document_root /home/arthur/Learning/techno/highload/http-test-suite
-worker_count 32       # number of accepting workers
-port 5000
-profile true

@@ -34,7 +34,7 @@ args_to_props(Args) when is_record(Args, server_args) -> ?LOG_DEBUG("args_to_pro
 	).
 
 handle_read_file({ok, Binary}) -> ?LOG_DEBUG("handle_read_file: ok, ~p~n", [Binary]),
-	Lines = binary:split(Binary, <<"\n">>),
+	Lines = binary:split(Binary, <<"\n">>, [global]),
 	LinesWithoutComments = clean_comments(Lines),
 	KWLists = format_lines(LinesWithoutComments),
 	TrimmedKwLists = trim_kw(KWLists),
@@ -72,7 +72,7 @@ add_prop([<<"document_root">> | [Value]], Props) ->
 		root = Value,
 		port = Props#server_props.port
 	};
-add_prop([_Other | [_]], Props) ->
+add_prop([_], Props) ->
 	Props.
 
 clean_comments(Lines) -> ?LOG_DEBUG("clean_comments: ~p~n", [Lines]),

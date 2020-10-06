@@ -137,9 +137,10 @@ treatHttpLines(Lines)
 		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, Lines]),
 	[Method, RequestURI, HttpVersion] = parseReqestFLine(Lines),
 	[Headers, Body] = parseRequestOtherLines(Lines),
+	[{DecodedURI, _}] = uri_string:dissect_query(cutArgs(RequestURI)),
 	Req = #http_request{
 		method = Method,
-		requestURI = http_uri:decode(RequestURI),
+		requestURI = DecodedURI,
 		httpVersion = HttpVersion,
 		headers = Headers,
 		body = Body
@@ -232,3 +233,6 @@ atos(Smth) when is_list(Smth) -> Smth;
 atos(Smth) when is_integer(Smth) -> integer_to_list(Smth);
 atos(Smth) when is_atom(Smth) -> atom_to_list(Smth);
 atos(Smth) when is_binary(Smth) -> binary_to_list(Smth).
+
+
+cutArgs(Uri) -> lists:nth(1, (string:split(Uri, "?"))).
