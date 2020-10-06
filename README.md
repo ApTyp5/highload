@@ -1,9 +1,7 @@
-highload
+Веб-сервер, утилизирующий все возможные ядра
 =====
 
-An OTP application
-
-Build
+Запуск
 -----
+Для запуска понадобится утилита [rebar3](https://github.com/erlang/rebar3).
 
-    $ rebar3 compile

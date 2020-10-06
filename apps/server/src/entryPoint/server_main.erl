@@ -16,14 +16,12 @@
 start(normal, Args)
 		-> ?LOG_NOTICE("starting server application with args: ~p~n", [Args]),
 %%	logger:set_module_level([server_acceptor, simple_http], debug), ?LOG_DEBUG("test"),
-	fprof:trace(start, "my_fprof.trace"),
 	ServerArgs = #server_args{configPath = Args},
 	{ok, ServerProps} = args_to_props(ServerArgs),
 	{ok, ListenSock} = start_listen_socket(ServerProps),
 	{ok, SupPid} = server_sup:start_link(to_sup_props(ServerProps, ListenSock)),
 	{ok, SupPid, ListenSock}.
 stop(ListenSocket) when is_port(ListenSocket) -> ?LOG_NOTICE("stopping server application"),
-	fprof:trace(stop),
 	close_listen_socket(ListenSocket).
 
 %% internal functions
