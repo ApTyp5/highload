@@ -131,6 +131,8 @@ headersResponse(HttpReq, AbsPath)
 	case file:read_file_info(AbsPath) of
 		{error, enoent} ->
 			{stop, notFoundResponse()};
+		{error, enotdir} ->
+			{stop, notFoundResponse()};
 		{ok, #file_info{size = Size}} ->
 			Type = extractContentTypeHeader(HttpReq#http_request.headers),
 			{ok, okResponse(Size, Type)};
