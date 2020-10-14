@@ -123,7 +123,7 @@ to_sup_props(#server_props{root = Root, workerNum = WorkerNum}, LSock)
 	}.
 
 close_listen_socket(ListenSocket)
-	when is_port(ListenSocket)-> ?LOG_DEBUG("~s/~p: ~p~n", [?FUNCTION_NAME, ?FUNCTION_ARITY, ListenSocket]),
+	when is_port(ListenSocket)-> ?LOG_NOTICE("~s/~p: ~p~n", [?FUNCTION_NAME, ?FUNCTION_ARITY, ListenSocket]),
 	gen_tcp:close(ListenSocket).
 
 
