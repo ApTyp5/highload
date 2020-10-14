@@ -65,7 +65,7 @@ handleConnection(Socket, Root)
 		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, [Socket, Root]]),
 	receive
 		handle ->
-			ok = handleRecv(gen_tcp:recv(Socket, 0), Socket, Root),
+			ok = handleRecv(gen_tcp:recv(Socket, 0, 500), Socket, Root),
 			gen_tcp:close(Socket)
 	end,
 	ok.
