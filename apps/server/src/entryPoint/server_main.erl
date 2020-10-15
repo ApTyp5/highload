@@ -15,7 +15,7 @@
 -spec start(Type :: atom(), ServerArgs :: #server_args{}) -> {ok, pid(), port()}.
 start(normal, Args)
 		-> ?LOG_NOTICE("starting server application with args: ~p~n", [Args]),
-%%	logger:set_module_level([server_acceptor, simple_http], debug), ?LOG_DEBUG("test"),
+	logger:set_module_level([server_acceptor, simple_http], debug), ?LOG_DEBUG("test"),
 	ServerArgs = #server_args{configPath = Args},
 	{ok, ServerProps} = args_to_props(ServerArgs),
 	{ok, ListenSock} = start_listen_socket(ServerProps),
@@ -111,7 +111,9 @@ start_listen_socket(#server_props{port = Port}) -> ?LOG_DEBUG("~s/~p: ~p~n", [?F
 	gen_tcp:listen(Port, [
 		{mode, binary},
 		{packet, 0},
-		{active, false}
+		{active, false},
+		{buffer, 1024 * 1024 * 1024},
+		{recbuf, 1024 * 1024 * 1000}
 	]).
 
 to_sup_props(#server_props{root = Root, workerNum = WorkerNum}, LSock)

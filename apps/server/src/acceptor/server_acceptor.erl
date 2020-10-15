@@ -38,12 +38,14 @@ handleAccepts(#acceptor_props{listenSock = LSock, root = Root})
 		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, [LSock, Root]]),
 	case gen_tcp:accept(LSock) of
 		{ok, Sock} ->
-			Pid = spawn(?MODULE, handleConnection, [Sock, Root]),
-			ok = handleControllingProcess(gen_tcp:controlling_process(Sock, Pid), Sock, Pid),
-			Pid ! handle;
+			fastHandleConnection(Sock, Root);
+%%			Pid = spawn(?MODULE, handleConnection, [Sock, Root]),
+%%			ok = handleControllingProcess(gen_tcp:controlling_process(Sock, Pid), Sock, Pid),
+%%			Pid ! handle;
 		{error, Reason} ->
 			?LOG_ERROR("accept error: ~p~n", [Reason])
 	end,
+	?LOG_DEBUG("endHandleAccepts"),
 	handleAccepts(#acceptor_props{listenSock = LSock, root = Root}).
 
 
@@ -57,6 +59,13 @@ handleControllingProcess(Smth, Sock, Pid)
 	-> ?LOG_ERROR("controlling process error: ~p~n", [{Smth, Sock, Pid}]),
 	ok.
 
+fastHandleConnection(Socket, Root)
+		when is_port(Socket) and is_binary(Root)
+		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, [Socket, Root]]),
+	ok = handleRecv(gen_tcp:recv(Socket, 0), Socket, Root),
+	gen_tcp:close(Socket),
+	?LOG_DEBUG("connection closed"),
+	ok.
 
 
 -spec handleConnection(Socket ::port(), Root :: binary()) -> ok.
@@ -65,9 +74,11 @@ handleConnection(Socket, Root)
 		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, [Socket, Root]]),
 	receive
 		handle ->
-			ok = handleRecv(gen_tcp:recv(Socket, 0, 500), Socket, Root),
-			gen_tcp:close(Socket)
+			ok = handleRecv(gen_tcp:recv(Socket, 0), Socket, Root),
+			gen_tcp:close(Socket),
+			?LOG_DEBUG("connection closed")
 	end,
+	?LOG_DEBUG("end worker"),
 	ok.
 
 
@@ -79,8 +90,11 @@ handleRecv({ok, Packet}, Socket, Root)
 		{stop, HttpRespHeadersBin, _} ->
 			gen_tcp:send(Socket, HttpRespHeadersBin);
 		{cont, HttpRespHeadersBin, AbsPath} ->
+			?LOG_DEBUG("answer prep-d, start send it"),
 			gen_tcp:send(Socket, HttpRespHeadersBin),
-			file:sendfile(AbsPath, Socket)
+			?LOG_DEBUG("answer sent, start send file"),
+			file:sendfile(AbsPath, Socket),
+			?LOG_DEBUG("file sent")
 	end,
 	ok;
 handleRecv(Error, _, _)
@@ -105,10 +119,12 @@ prepareAnswer(Packet, Root)
 prepareResponseHeaders(<<"GET">>, HttpReq, AbsPath)
 		when is_record(HttpReq, http_request)
 		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, ["GET", HttpReq, AbsPath]]),
-	case headersResponse(HttpReq, AbsPath) of
+	Out = case headersResponse(HttpReq, AbsPath) of
 		{stop, HeadersRespBin} -> {stop, HeadersRespBin};
 		{ok, HeadersRespBin} -> {cont, HeadersRespBin}
-	end;
+	end,
+	?LOG_DEBUG("prep headers done"),
+	Out;
 
 prepareResponseHeaders(<<"HEAD">>, HttpReq, AbsPath)
 		when is_record(HttpReq, http_request)
