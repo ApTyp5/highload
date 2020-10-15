@@ -34,30 +34,22 @@ handle_cast(start_accept, Props) when is_record(Props, acceptor_props) ->
 start_link(Props) when is_record(Props, acceptor_props) -> ?LOG_NOTICE("acceptor started with props: ~p~n", [Props]),
 	gen_server:start_link(?MODULE, Props, []).
 
-handleAccepts(#acceptor_props{listenSock = LSock, root = Root})
-		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, [LSock, Root]]),
+handleAccepts(AcceptorProps) when is_record(AcceptorProps, acceptor_props)
+		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, AcceptorProps]),
+	handleAcceptsCounter(AcceptorProps, 1).
+
+handleAcceptsCounter(#acceptor_props{listenSock = LSock, root = Root}, Counter)
+	-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, [LSock, Root]]),
 	case gen_tcp:accept(LSock) of
 		{ok, Sock} ->
-			fastHandleConnection(Sock, Root);
-%%			Pid = spawn(?MODULE, handleConnection, [Sock, Root]),
-%%			ok = handleControllingProcess(gen_tcp:controlling_process(Sock, Pid), Sock, Pid),
-%%			Pid ! handle;
+			?LOG_NOTICE("handle ~p connection on socket ~p~n", [Counter, Sock]),
+			fastHandleConnection(Sock, Root),
+			?LOG_NOTICE("connection ~p on socket ~p handled~n", [Counter, Sock]);
 		{error, Reason} ->
 			?LOG_ERROR("accept error: ~p~n", [Reason])
 	end,
 	?LOG_DEBUG("endHandleAccepts"),
-	handleAccepts(#acceptor_props{listenSock = LSock, root = Root}).
-
-
-handleControllingProcess(ok, _Sock, _Pid) ->
-%%	-> ?LOG_NOTICE("controlling process success: ~p~n", [{Sock, Pid}]),
-	ok;
-handleControllingProcess({error, Reason}, Sock, Pid)
-	-> ?LOG_NOTICE("controlling process trouble: ~p~n", [{Reason, Sock, Pid}]),
-	ok;
-handleControllingProcess(Smth, Sock, Pid)
-	-> ?LOG_ERROR("controlling process error: ~p~n", [{Smth, Sock, Pid}]),
-	ok.
+	handleAcceptsCounter(#acceptor_props{listenSock = LSock, root = Root}, Counter + 1).
 
 fastHandleConnection(Socket, Root)
 		when is_port(Socket) and is_binary(Root)
