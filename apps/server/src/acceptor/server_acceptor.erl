@@ -1,5 +1,5 @@
 -module(server_acceptor).
--author("arthur").
+-author("aptyp potatoch").
 
 %% includes
 -include("./acceptor_props.hrl").

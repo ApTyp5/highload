@@ -1,4 +1,4 @@
--author("arthur").
+-author("aptyp potatoch").
 
 %% includes
 -include_lib("kernel/include/logger.hrl").

@@ -1,11 +1,11 @@
 -module(simple_http).
 -author("aptyp potatoch").
 
-%% Includes
+%% includes
 -include("./types.hrl").
 -include_lib("kernel/include/logger.hrl").
 
-%% public API
+%% exports
 -export([
 	parse/1,
 	addHeader/2,
@@ -16,6 +16,7 @@
 	responseToBinary/1
 ]).
 
+%% internals // warning: hipster's codestyle detected
 
 -spec generate(
 	ResponseVersion :: #response_version{},
