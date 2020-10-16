@@ -33,8 +33,7 @@ generate(ResponseVersion, StatuseCode, ReasonPhrase) ->
 	addHeader(Response, #header{
 		key = <<"Server">>,
 		value = "Erlang server"
-	}
-	).
+	}).
 
 -spec generate(#response_version{},
 	StatusCode :: integer(),
