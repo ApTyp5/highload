@@ -96,7 +96,7 @@ add_prop([<<"document_root">> | [Value]], Props) ->
 	},
 	?DEBUG_EXIT_LOG_N_RETURN([[<<"document_root">> | [Value]], Props], Res);
 
-add_prop([ErrorProp], Props) -> ?HANDLE_ERROR_LOG_N_RETURN([[ErrorProp], Props], Props).
+add_prop([_], Props) -> Props.
 
 
 clean_comments(Lines) ->
