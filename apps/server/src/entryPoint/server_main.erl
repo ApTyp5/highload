@@ -17,6 +17,7 @@
 -export([start/2, stop/1]).
 
 -spec start(Type :: atom(), ServerArgs :: #server_args{}) -> {ok, pid(), port()}.
+
 start(normal, Args) ->
 	?LOG_NOTICE("starting server application with args: ~p~n", [Args]),
 	logger:set_module_level([server_main], debug), ?LOG_DEBUG("test"),
