@@ -40,10 +40,7 @@ args_to_props(Args) when is_record(Args, server_args) ->
 	Res = handle_read_file(
 		file:read_file(Args#server_args.configPath)
 	),
-	?LOG_NOTICE("Res: ~p~n", [Res]),
-	Hey = ?DEBUG_EXIT_LOG_N_RETURN(Args, Res),
-	?LOG_NOTICE("Hey: ~p~n", [Hey]),
-	Hey.
+	?DEBUG_EXIT_LOG_N_RETURN(Args, Res).
 
 
 handle_read_file({ok, Binary}) ->
@@ -143,7 +140,7 @@ trim_kw(KWLists) ->
 
 
 start_listen_socket(#server_props{port = Port}) ->
-%%	?DEBUG_ENTRY_LOG(Port),
+	?DEBUG_ENTRY_LOG(Port),
 	Options = [
 		{mode, binary},
 		{packet, 0},
@@ -156,8 +153,7 @@ start_listen_socket(#server_props{port = Port}) ->
 	],
 	?LOG_NOTICE("start listening on port ~p with options ~p~n", [Port, Options]),
 	Res = gen_tcp:listen(Port, Options),
-%%	?DEBUG_EXIT_LOG_N_RETURN(Port, Res).
-	Res.
+	?DEBUG_EXIT_LOG_N_RETURN(Port, Res).
 
 to_sup_props(#server_props{root = Root, workerNum = WorkerNum}, LSock)
 	when is_port(LSock) ->
