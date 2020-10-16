@@ -20,7 +20,7 @@
 
 start(normal, Args) ->
 	?LOG_NOTICE("starting server application with args: ~p~n", [Args]),
-	logger:set_module_level([server_main], debug), ?LOG_DEBUG("test"),
+%%	logger:set_module_level([server_main], debug), ?LOG_DEBUG("test"),
 	ServerArgs = #server_args{configPath = Args},
 	{ok, ServerProps} = args_to_props(ServerArgs),
 	?LOG_NOTICE("server props are: ~p~n", [ServerProps]),

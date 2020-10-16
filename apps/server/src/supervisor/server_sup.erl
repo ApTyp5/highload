@@ -8,6 +8,9 @@
 -include("../include/debug_output.hrl").
 -include_lib("kernel/include/logger.hrl").
 
+%% exports
+-export([start_link/1]).
+
 %% behaviour
 -behaviour(supervisor).
 -export([init/1]).
@@ -27,8 +30,7 @@ init(AcceptorProps) when is_record(AcceptorProps, acceptor_props) ->
 	Res = {ok, {SupFlags, ChildSpecs}},
 	?DEBUG_EXIT_LOG_N_RETURN(AcceptorProps, Res).
 
-%% exports
--export([start_link/1]).
+%% internal functions
 
 -spec start_link(Props :: #sup_start_props{}) -> classic_return(pid()).
 
@@ -41,7 +43,6 @@ start_link(Props) when is_record(Props, sup_start_props) ->
 	Res = {ok, Pid},
 	?DEBUG_EXIT_LOG_N_RETURN(Props, Res).
 
-%% internal functions
 
 to_acceptor_props(#sup_start_props{listenSock = ListenSock, root = Root}) ->
 	?DEBUG_ENTRY_LOG({ListenSock, Root}),
