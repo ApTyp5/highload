@@ -16,7 +16,7 @@
 -behaviour(application).
 -export([start/2, stop/1]).
 
--spec start(Type :: atom(), ServerArgs :: #server_args{}) -> {ok, pid(), port()}.
+-spec start(Type :: atom(), ServerArgs :: string()) -> {ok, pid(), port()}.
 
 start(normal, Args) ->
 	?LOG_NOTICE("starting server application with args: ~p~n", [Args]),
