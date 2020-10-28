@@ -202,7 +202,10 @@ getExtensionName(<<"svg">>) -> "image/svg";
 getExtensionName(<<"gif">>) -> "image/gif";
 getExtensionName(<<"js">>) -> "text/javascript";
 getExtensionName(<<"txt">>) -> "text";
-getExtensionName(<<"swf">>) -> "application/x-shockwave-flash".
+getExtensionName(<<"swf">>) -> "application/x-shockwave-flash";
+getExtensionName(Any) when is_list(Any) -> Any;
+getExtensionName(Any) when is_binary(Any) -> binary_to_list(Any);
+getExtensionName(_Any) -> "unknown".
 
 restoreURI(URI)
 		-> ?LOG_DEBUG("~s:~s/~p: ~p~n", [?MODULE_STRING, ?FUNCTION_NAME, ?FUNCTION_ARITY, URI]),
