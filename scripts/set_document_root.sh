@@ -1,3 +1,5 @@
 #!/bin/bash
 
-./scripts/base_set_param.sh document_root "$1"
+server_root="../../../../"
+
+./scripts/base_set_param.sh document_root "$server_root$1"
