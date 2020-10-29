@@ -10,7 +10,7 @@
 -include_lib("kernel/include/logger.hrl").
 
 %% exports
--export([stop_server/0]).
+-export([stop_server/0, analyze/0, analyze/1]).
 
 %% behaviour
 -behaviour(application).
@@ -20,7 +20,8 @@
 
 start(normal, Args) ->
 	?LOG_NOTICE("starting server application with args: ~p~n", [Args]),
-%%	logger:set_module_level([server_main], debug), ?LOG_DEBUG("test"),
+%%	logger:set_module_level([server_acceptor], debug), ?LOG_DEBUG("test"),
+%%	erlang:system_flag(schedulers_online, 1),
 	ServerArgs = #server_args{configPath = Args},
 	{ok, ServerProps} = args_to_props(ServerArgs),
 	?LOG_NOTICE("server props are: ~p~n", [ServerProps]),
@@ -174,4 +175,7 @@ close_listen_socket(ListenSocket)
 	?DEBUG_EXIT_LOG_N_RETURN(ListenSocket, Res).
 
 
-stop_server() -> application:stop(server), halt().
+stop_server() -> ok = application:stop(server), halt().
+
+analyze() -> analyze(10000).
+analyze(TimeMs) -> msacc:start(TimeMs), msacc:print().

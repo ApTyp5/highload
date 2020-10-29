@@ -1,15 +1,17 @@
 {application, server,
- [{description, "An OTP application"},
-  {vsn, "0.1.0"},
-  {registered, []},
-  {mod, {server_main, "../../../../config/server_config.txt"}},
-  {applications,
-   [kernel,
-    stdlib
-   ]},
-  {env,[]},
-  {modules, []},
+	[{description, "An OTP application"},
+		{vsn, "0.1.0"},
+		{registered, []},
+		{mod, {server_main, "../../../../config/server_config.txt"}},
+		{applications,
+			[kernel,
+				stdlib,
+				runtime_tools
+			]},
+		{env, []},
+		{modules, []},
+%%		{runtime_dependencies, ["wx-1.2", "stdlib-2.0", "runtime_tools-1.8.14", "kernel-3.0", "inets-5.10", "et-1.5", "erts-6.0"]},
 
-  {licenses, ["Apache 2.0"]},
-  {links, []}
- ]}.
+{licenses, ["Apache 2.0"]},
+{links, []}
+]}.
