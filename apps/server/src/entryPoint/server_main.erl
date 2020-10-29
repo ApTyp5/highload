@@ -175,7 +175,7 @@ close_listen_socket(ListenSocket)
 	?DEBUG_EXIT_LOG_N_RETURN(ListenSocket, Res).
 
 
-stop_server() -> ok = application:stop(server), halt().
+stop_server() -> ok = application:stop(server), timer:sleep(2000), halt().
 
 analyze() -> analyze(10000).
 analyze(TimeMs) -> msacc:start(TimeMs), msacc:print().

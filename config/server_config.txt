@@ -1,3 +1,3 @@
 document_root ../../../.././public/http-test-suite/httptest/
-worker_count 2048
+worker_count 100
 port 80

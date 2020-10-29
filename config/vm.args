@@ -6,4 +6,4 @@
 
 +scl true
 
-+sbt ns
++sbt ts
